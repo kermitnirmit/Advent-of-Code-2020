@@ -1,7 +1,7 @@
 groups = open("input.txt").read().rstrip().split("\n\n")
 
 # q1
-# print(sum(len(set(i.replace("\n", ""))) for i in groups))
+print(sum(len(set(i.replace("\n", ""))) for i in groups))
 
 # q2
 # print(groups)

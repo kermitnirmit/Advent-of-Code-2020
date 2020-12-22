@@ -2,7 +2,6 @@ f = open("input.txt").read().rstrip().split("\n")
 
 highest_id = 0
 ids = [i for i in range(1024)]
-test = ["FBFBBFFRLR", "BFFFBBFRRR", "FFFBBBFRRR", "BBFFBBFRLL"]
 for seat in f:
     l, h = 0, 127
     cl, cr = 0, 7
@@ -17,6 +16,5 @@ for seat in f:
             cl = (cl + cr) // 2 + 1
     ids[l * 8 + cl] = "X"
     highest_id = max(l * 8 + cl, highest_id)
-# print(seat, l, h, cl , cr)
-print(ids)
 print (highest_id)
+print([seat for i, seat in enumerate(ids) if 1 <= i <= len(ids) - 2 and seat != "X" and ids[i - 1] == ids[i + 1]][0])

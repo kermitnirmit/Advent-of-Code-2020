@@ -10,31 +10,30 @@ for index, asdf in enumerate(instructions):
 
     if inst != "acc":
         indexes.append(index)
-# print(indexes)
-# visited = set()
-# acc_val = 0
+visited = set()
+acc_val = 0
 
-# def get_answer():
-#     visited = set()
-#     acc_val = 0
-#     i = 0
-#     while i > -1:
-#         if i in visited:
-#             return acc_val
-#         else:
-#             visited.add(i)
-#             inst, num = instructions[i]
-#             if inst == "acc":
-#                 acc_val += num
-#                 i += 1
-#             elif inst == "jmp":
-#                 i += num
-#             else:
-#                 i += 1
+def get_answer():
+    visited = set()
+    acc_val = 0
+    i = 0
+    while i > -1:
+        if i in visited:
+            return acc_val
+        else:
+            visited.add(i)
+            inst, num = instructions[i]
+            if inst == "acc":
+                acc_val += num
+                i += 1
+            elif inst == "jmp":
+                i += num
+            else:
+                i += 1
 
-# print(get_answer())
+print(get_answer())
 answers = []
-print(instructions)
+# print(instructions)
 last_index = len(instructions)
 def modified_answer(index):
     visited = set()
@@ -69,6 +68,6 @@ def modified_answer(index):
 for index in indexes:
     a = modified_answer(index)
     if len(a) == 2:
-        print(a)
+        print(a[1])
 
 

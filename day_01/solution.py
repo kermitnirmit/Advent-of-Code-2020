@@ -4,10 +4,10 @@ entries = sorted([int(x) for x in f])
 
 
 # # Problem 1
-# for entry in all_entries:
-#     if 2020 - entry in all_entries:
-#         print( entry * (2020 - entry))
-#         break
+for entry in entries:
+    if 2020 - entry in entries:
+        print( entry * (2020 - entry))
+        break
 count = len(entries)
 
 for i in range(count- 2):
@@ -20,7 +20,6 @@ for i in range(count- 2):
             r-=1
         else:
             l += 1
-print("none found")
 
 
 # print(len(all_entries))

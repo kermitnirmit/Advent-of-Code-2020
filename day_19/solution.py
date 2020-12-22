@@ -6,8 +6,7 @@ f = open('input.txt').read().strip().split("\n\n")
 rules = f[0].split('\n')
 messages = f[1].split("\n")
 
-rules = dict(r.replace('"', "").split(": ", 1) for r in rules
-)
+rules = dict(r.replace('"', "").split(": ", 1) for r in rules)
 
 
 def solve(rules, messages):
