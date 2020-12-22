@@ -30,7 +30,6 @@ while i <= len(act):
         arr_to_return = act[start: i]
         print(sum(arr_to_return))
         print("answer: ", min(arr_to_return) + max(arr_to_return))
-        # print(act[start: i])
     if i < len(act):
         curr += act[i]
     i += 1
