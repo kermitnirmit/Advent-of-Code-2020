@@ -1,8 +1,6 @@
 f = open('input.txt').read().strip().split("\n\n")
 
-
-origp1 = [int(x) for x in f[0].split("\n")[1:]]
-origp2 = [int(x) for x in f[1].split("\n")[1:]]
+origp1, origp2 = [[int(x) for x in q.split("\n")[1:]] for q in f]
 p1 = origp1.copy()
 p2 = origp2.copy()
 
@@ -22,7 +20,7 @@ def recursive_war(p1cards, p2cards, visited):
     while(len(p1cards) > 0 and len(p2cards) > 0):
         if (tuple(p1cards), tuple(p2cards)) in visited:
             return 1, p1cards
-        
+
         visited.add((tuple(p1cards), tuple(p2cards)))
         
         a, b = p1cards.pop(0), p2cards.pop(0)
