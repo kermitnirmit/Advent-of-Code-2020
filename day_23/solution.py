@@ -17,46 +17,29 @@ def build_next_three(qwer, index):
 smallest, biggest = min(f), max(f)
 current_i = 0
 for move in range(100):
-    # print(f[current_i])
-    save_this = f[current_i]
-    # print("current_cup", save_this)
-    # print("cups", f)
-    next_three = build_next_three(f, current_i)
-    # print("pickup", next_three)
+    save_this, next_three = f[current_i], build_next_three(f, current_i)
+    
     for a in next_three:
         f.remove(a)
+    
+    dest_cup, val_to_find = None, save_this - 1
+    seen = set(next_three)
+    seen.add(save_this)
+    while val_to_find in next_three:
+        val_to_find -= 1
+    if val_to_find == 0:
+        val_to_find = max(f)
+    dest_cup = f.index(val_to_find)
 
-    dest_cup = None
-    val_to_find = save_this - 1
-    while not dest_cup:
-        if val_to_find in next_three:
-            val_to_find -= 1
-        else:
-            if val_to_find < smallest:
-                val_to_find = biggest
-            if val_to_find in f:
-                dest_cup = f.index(val_to_find)
-                break
-    # print("destination:", f[dest_cup])
     add_index = (dest_cup + 1) % 9
     for a in next_three:
         f.insert(add_index, a)
         add_index = (add_index + 1) % 9
-    # print("f after: ", f)
     current_i = (f.index(save_this) + 1) % len(f)
-# print(f)
 
+print("answer", "".join(str(x) for x in f[f.index(1) + 1: ] + f[:f.index(1)]))
 
-def get_answer(f):
-    return f[f.index(1) + 1: ] + f[:f.index(1)]
-
-
-asdfsdaf = get_answer(f)
-
-qq = "".join(str(x) for x in get_answer(f))
-print("answer", qq)
-
-# here down was basically copied from reddit holy cow doing it the old way toook forever
+# credit @nthistle for helping me unfuck my errors in this
 
 class Node:
     def __init__(self, val, next=None):
