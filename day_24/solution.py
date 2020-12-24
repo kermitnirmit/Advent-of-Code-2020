@@ -28,8 +28,7 @@ for line in f:
         else:
             qwer.append(line[i])
             i+= 1
-    final_loc = evaluate_line(qwer)
-    tiles[final_loc] += 1
+    tiles[evaluate_line(qwer)] += 1
 
 print("part 1 answer: ", sum(1 for i, v in tiles.items() if v % 2 == 1))
 
@@ -52,8 +51,7 @@ def count_neighbors(psat, loc):
         if (newx, newy) in psat:
             if psat[(x + dx, y + dy)] % 2 == 1:
                 blacks += 1
-        else:
-            pass
+    
     return blacks
 
 old = tiles
@@ -61,16 +59,12 @@ for i in trange(100):
     new_day = {}
     for loc, v in old.items():
         n = count_neighbors(old, loc)
-        if v % 2 == 1:
-            if n == 0 or n > 2:
-                new_day[loc] = v + 1
-            else:
-                new_day[loc] = v
+        if v % 2 == 1 and (n == 0 or n > 2):
+            new_day[loc] = v + 1
+        elif v % 2 == 0 and n == 2:
+            new_day[loc] = v + 1
         else:
-            if n == 2:
-                new_day[loc] = v + 1
-            else:
-                new_day[loc] = v
+            new_day[loc] = v
 
     neighbors_to_add = set((x + dx, y + dy) for dx, dy in dirs for x,y in list(new_day.keys()))
     for a in neighbors_to_add:
