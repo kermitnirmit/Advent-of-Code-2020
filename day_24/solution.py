@@ -32,7 +32,7 @@ for line in f:
 
 print("part 1 answer: ", sum(1 for i, v in tiles.items() if v % 2 == 1))
 
-neighbors_to_add = set((x + dx, y + dy) for dx, dy in dirs for x,y in list(tiles.keys()))
+neighbors_to_add = set((x + dx, y + dy) for dx, dy in dirs for x,y in list(tiles.keys()) if tiles[x,y] % 2 == 1)
 for a in neighbors_to_add:
     if a in tiles:
         pass
@@ -66,7 +66,7 @@ for i in trange(100):
         else:
             new_day[loc] = v
 
-    neighbors_to_add = set((x + dx, y + dy) for dx, dy in dirs for x,y in list(new_day.keys()))
+    neighbors_to_add = set((x + dx, y + dy) for dx, dy in dirs for x,y in list(new_day.keys()) if new_day[x,y] % 2 == 1)
     for a in neighbors_to_add:
         if a in new_day:
             pass
