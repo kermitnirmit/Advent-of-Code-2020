@@ -1,111 +1,69 @@
 from collections import defaultdict
-import numpy as np
+import regex as re
 f = open('input.txt').read().strip().split("\n\n")
-# f = open('small_input.txt').read().strip().split("\n\n")
+tiles = {int(p[5:9]): p[11:] for p in open('input.txt').read().strip().split('\n\n')}
+flip_tile = lambda p: '\n'.join(l[::-1] for l in p.split('\n'))
+rotClockwise = lambda p: '\n'.join(''.join(l[::-1]) for l in zip(*p.split('\n')))
+edge = lambda p,i: [p[:10], p[9::11], p[-10:], p[0::11]][i]
+def get_all_versions(a):
+    b = a
+    A = [b]
+    for _ in range(3):
+        b = rotClockwise(b)
+        A.append(b)
+    flipped_versions = [flip_tile(q) for q in A]
+    A.extend(flipped_versions)
+    return A
+all_tile_versions = []
 
+for v in tiles.values():
+    all_tile_versions.extend(get_all_versions(v))
 
-class Tile:
-    def __init__(self, id, grid):
-        self.id = id
-        # trbl
-        self.edges = [
-            grid[0],
-            "".join([x[-1] for x in grid]),
-            grid[-1],
-            "".join([x[0] for x in grid])
-        ]
-        self.o = 0
+def match(grid, i):
+    versions_of_self = get_all_versions(grid)
+    for new_tile in all_tile_versions:
+        if new_tile not in versions_of_self:
+            if edge(new_tile, (i+ 2 )% 4) == edge(grid, i):
+                return new_tile
 
-# def get_edges(grid):
-#     top = grid[0]
-#     bottom = grid[-1]
-#     left = [x[0] for x in grid]
-#     right = [x[-1] for x in grid]
-
-tiles = []
-tilemap = {}
-for paragraph in f:
-    lines = paragraph.split("\n")
-    name = int(lines[0].split(" ")[1][:-1])
-    rest = lines[1:]
-    # print(name, rest)
-    thisTile = Tile(name, rest)
-    tiles.append(Tile(name, rest))
-    tilemap[name] = thisTile
-
-# for tile in tiles:
-    # print(tile.id, tile.edges)
-
-a = defaultdict(int)
-tile_lookup = defaultdict(list)
-edge_lookup = defaultdict(list)
-for tile in tiles:
-    for edge in tile.edges:
-        edge_lookup[tile.id].append(edge)
-        rev_edge = edge[::-1]
-        a[edge] += 1
-        a[rev_edge] += 1
-        tile_lookup[edge].append(tile.id)
-        tile_lookup[rev_edge].append(tile.id)
-c = 0    
-# for edge in a.keys():
-    
-    # if a[edge] == 1:
-    #     print(tile_lookup[edge])
 corners = []
-edge_tiles = []
+for name, grid in tiles.items():
+    c = 0
+    for i in range(4):
+        if not match(grid, i):
+            c += 1
+    if c == 2:
+        corners.append(name)
 
-for tile in tiles:
-    # print(tile.id)
-    one_count = 0
-    for edge in tile.edges:
-        # print(edge, a[edge])
-        if a[edge] == 1:
-            one_count+=1
-    if one_count == 2:
-        corners.append(tile.id)
-    if one_count <=2:
-        edge_tiles.append(tile)
-print(corners)
-z = 1
-for corner in corners:
-    z *= corner
-print(z)
-
-# print(tile_lookup['#.......##'])
-
-# print(edge_tiles)
-# 12x12 square has 264 interior sides = 264 edges should have a count of two
-matches = []
-for et in edge_tiles:
-    for et2 in edge_tiles:
-        if et == et2:
-            pass
-        else:
-            for edge in et.edges:
-                if edge in et2.edges:
-                    if et.id < et2.id:
-                        matches.append((et.id, et2.id, et.edges.index(edge), et2.edges.index(edge)))
-                if edge[::-1] in et2.edges:
-                    if et.id < et2.id:
-                        matches.append((et.id, et2.id, et.edges.index(edge), et2.edges.index(edge[::-1]), "R"))
-print(matches)
-print(len(matches))
-
-# (2371, 2593, 0, 0)
-
-print(edge_lookup[2371])
-print(edge_lookup[2593])
-placed = []
-
-def build(seed):
-    placed.append(seed.id)
-    currLoc = [0,0]
-    for edge in tilemap[seed.id]:
-        
+q = 1
+for a in corners:
+    q *= a
+print("Part 1: ", q)
 
 
+corner_tile = next(p for p in get_all_versions(tiles[corners[0]]) if (match(p, 2) and match(p, 3)))
+
+def go_along(grid, i):
+    curr = [grid]
+    for _ in range(11):
+        curr.append(match(curr[-1], i))
+    return curr
+
+final_grid = [go_along(w, 3) for w in go_along(corner_tile, 2)]
+
+image = '\n'.join(''.join(a[i:i+8] for a in B[::-1]) for B in final_grid for i in range(12, 99, 11))
 
 
+monster = """                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   """
 
-build(2833)
+all_versions_of_image = get_all_versions(image)
+gap_to_next_line = '[.#\n]{77}'
+look_for = f'#.{gap_to_next_line + "#....#"*3}##{gap_to_next_line}.#{"..#"*5}'
+c = 0
+for v in all_versions_of_image:
+    a = len(re.findall(look_for, v, overlapped=True))
+    c+= a
+all_hashs = sum(1 for a in image if a == "#")
+print("part 2: ", all_hashs - 15 * c)
